@@ -10,9 +10,9 @@ const balanceFn = '"bond":';
 const stakeFn = '"voting_power":';
 const rewardsFn = '"rewards":';
 
-function checkNumericMetric (expr, gauge) {
+async function checkNumericMetric (expr, gauge) {
     exec(`/usr/local/bin/fn show | grep -w '${expr}' | sed 's/.$//' | sed 's/^.*: //'`, 
-    async (error, stdout, stderr) => {
+    (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
@@ -48,9 +48,10 @@ function setNumericMetrics (registry) {
         registers: [registry],
     });
 
-    setInterval(checkNumericMetric(balanceFn, balance), 5000);
-    setInterval(checkNumericMetric(stakeFn,stake), 5000);
-    setInterval(checkNumericMetric(rewardsFn, rewards), 5000);
+    setInterval(async () => await checkNumericMetric(balanceFn, balance), 5000);
+    setInterval(async () => await checkNumericMetric(stakeFn,stake), 5000);
+    setInterval(async () => await checkNumericMetric(rewardsFn, rewards), 5000);
+
 
 }
 
