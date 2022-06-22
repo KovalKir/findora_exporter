@@ -52,9 +52,42 @@ function setNumericMetrics (registry) {
     setInterval(async () => await checkNumericMetric(stakeFn,stake), 5000);
     setInterval(async () => await checkNumericMetric(rewardsFn, rewards), 5000);
 
+}
+
+function checkValidatorStatus (registry) {
+    const gauge = new client.Gauge({
+        name: 'validator_status',
+        help: 'Validator Online Status (1 = online, 0 = offline)',
+        registers: [registry],
+    });
+
+    function checkStatus () { 
+        exec(`/usr/local/bin/fn show | grep -w "is_online" | sed 's/.$//' | sed 's/^.*: //'`, 
+            async (error, stdout, stderr) => {
+                if (error) {
+                    console.log(`error: ${error.message}`);
+                    return;
+                }
+                if (stderr) {
+                    console.log(`stderr: ${stderr}`);
+                    return;
+                }
+
+                let status = String (stdout);
+
+                status = status[0] + status[1] + status[2] + status[3];
+                
+                status == 'true' ? status = 1 : status = 0;
+                gauge.set(status);
+
+            })
+    }
+    
+    setInterval(checkStatus, 5000);
 
 }
 
 module.exports = (registry) => {
     setNumericMetrics(registry);
+    checkValidatorStatus(registry);
 };
