@@ -75,7 +75,7 @@ function checkValidatorStatus (registry) {
 
                 let status = String (stdout);
 
-                status = status[0] + status[1] + status[2] + status[3];
+                status = status.trim();
                 
                 status == 'true' ? status = 1 : status = 0;
                 gauge.set(status);
