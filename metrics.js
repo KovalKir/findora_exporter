@@ -4,6 +4,8 @@ const client = require('prom-client');
 
 const { exec } = require('child_process');
 
+const axios = require ('axios').default;
+
 
 const statusFn = '"is_online":';
 const balanceFn = '"bond":';
@@ -87,7 +89,30 @@ function checkValidatorStatus (registry) {
 
 }
 
+function checkSyncNode (registry) {
+    
+    const gauge = new client.Gauge({
+        name: 'validator_sync_status',
+        help: 'Validator Sync Status (1 = catching up, 0 = synced)',
+        registers: [registry],
+    });
+    
+    function checkSync () {
+        axios.get('http://0.0.0.0:26657/status').then ( (response) => {
+            const isSynced = response.data.result.sync_info.catching_up;
+            isSynced === true ? gauge.set(1) : gauge.set(0);
+        }).catch( (error) => {
+            console.error(error);
+        });
+
+    }
+
+    setInterval(checkSync,5000);
+
+}
+
 module.exports = (registry) => {
     setNumericMetrics(registry);
     checkValidatorStatus(registry);
+    checkSyncNode(registry);
 };

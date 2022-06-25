@@ -9,6 +9,7 @@
   "author": "Kir Koval <kirill@genesislab.net>",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.27.2",
     "child-process": "^1.0.2",
     "express": "^4.18.1",
     "prom-client": "^14.0.1"
