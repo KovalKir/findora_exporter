@@ -93,14 +93,14 @@ function checkSyncNode (registry) {
     
     const gauge = new client.Gauge({
         name: 'validator_sync_status',
-        help: 'Validator Sync Status (1 = catching up, 0 = synced)',
+        help: 'Validator Sync Status (1 = synced, 0 = catching up)',
         registers: [registry],
     });
     
     function checkSync () {
         axios.get('http://0.0.0.0:26657/status').then ( (response) => {
             const isSynced = response.data.result.sync_info.catching_up;
-            isSynced === true ? gauge.set(1) : gauge.set(0);
+            isSynced === true ? gauge.set(0) : gauge.set(1);
         }).catch( (error) => {
             console.error(error);
         });

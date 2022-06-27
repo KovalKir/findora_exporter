@@ -4,7 +4,7 @@
   "description": "exporter for findora validator",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "author": "Kir Koval <kirill@genesislab.net>",
   "license": "ISC",
