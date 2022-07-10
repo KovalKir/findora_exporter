@@ -6,6 +6,7 @@ const { exec } = require('child_process');
 
 const axios = require ('axios').default;
 
+const requestInterval = 60000; //ms
 
 const statusFn = '"is_online":';
 const balanceFn = '"bond":';
@@ -50,9 +51,9 @@ function setNumericMetrics (registry) {
         registers: [registry],
     });
 
-    setInterval(async () => await checkNumericMetric(balanceFn, balance), 5000);
-    setInterval(async () => await checkNumericMetric(stakeFn,stake), 5000);
-    setInterval(async () => await checkNumericMetric(rewardsFn, rewards), 5000);
+    setInterval(async () => await checkNumericMetric(balanceFn, balance), requestInterval);
+    setInterval(async () => await checkNumericMetric(stakeFn,stake), requestInterval);
+    setInterval(async () => await checkNumericMetric(rewardsFn, rewards), requestInterval);
 
 }
 
@@ -85,7 +86,7 @@ function checkValidatorStatus (registry) {
             })
     }
     
-    setInterval(checkStatus, 5000);
+    setInterval(checkStatus, requestInterval);
 
 }
 
@@ -98,7 +99,7 @@ function checkSyncNode (registry) {
     });
     
     function checkSync () {
-        axios.get('http://0.0.0.0:26657/status').then ( (response) => {
+        axios.get('http://127.0.0.1:26657/status').then ( (response) => {
             const isSynced = response.data.result.sync_info.catching_up;
             isSynced === true ? gauge.set(0) : gauge.set(1);
         }).catch( (error) => {
@@ -107,7 +108,7 @@ function checkSyncNode (registry) {
 
     }
 
-    setInterval(checkSync,5000);
+    setInterval(checkSync,requestInterval);
 
 }
 
