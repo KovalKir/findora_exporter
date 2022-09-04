@@ -33,8 +33,8 @@ function setExplorerMetrics (registry) {
     function setMetrics () {
         axios.get(url).then ( (response) => {
         
-            balance.set(response.data.self_staking);
-            stake.set(response.data.voting_power);
+            balance.set(response.data.self_staking/1000000);
+            stake.set(response.data.voting_power/1000000);
             response.data.is_online === true ? status.set(1) : status.set(0);
     
         }).catch ( (error) => {
