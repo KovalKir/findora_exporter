@@ -41,9 +41,11 @@ function setExplorerMetrics (registry) {
             response.data.is_online === true ? status.labels({statusCode: '200'}).set(1) : status.labels({statusCode: '200'}).set(0);
     
         }).catch ( (error) => {
-            balance.labels({statusCode:'500'}).set(500);
-            stake.labels({statusCode:'500'}).set(500);
-            status.labels({statusCode:'500'}).set(500);
+            balance.labels({statusCode:'500'});
+            stake.labels({statusCode:'500'});
+            status.labels({statusCode:'500'});
+
+            console.error(error);
         });
 
     }
@@ -67,7 +69,8 @@ function checkSyncNode (registry) {
             const isSynced = response.data.result.sync_info.catching_up;
             isSynced === true ? gauge.labels({statusCode: '200'}).set(0) :  gauge.labels({statusCode: '200'}).set(1);
         }).catch( (error) => {
-            gauge.labels({statusCode: '500'}).set(500);
+            gauge.labels({statusCode: '500'});
+            console.error(error);
         });
 
     }
