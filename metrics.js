@@ -16,34 +16,34 @@ function setExplorerMetrics (registry) {
         name: 'self_delegation_FRA',
         help: 'Validator Self Delegation (FRA)',
         registers: [registry],
-        labelNames: ['statusCode'],
+        labelNames: ['method'],
     });
 
     const stake = new client.Gauge ({
         name: 'validator_voting_power',
         help: 'Total Stake (FRA)',
         registers: [registry],
-        labelNames: ['statusCode'],
+        labelNames: ['method'],
     });
 
     const status = new client.Gauge({
         name: 'validator_status',
         help: 'Validator Online Status (1 = online, 0 = offline)',
         registers: [registry],
-        labelNames: ['statusCode'],
+        labelNames: ['method'],
     });
 
     function setMetrics () {
         axios.get(url).then ( (response) => {
         
-            balance.labels({statusCode: '200'}).set(response.data.self_staking/1000000);
-            stake.labels({statusCode: '200'}).set(response.data.voting_power/1000000);
-            response.data.is_online === true ? status.labels({statusCode: '200'}).set(1) : status.labels({statusCode: '200'}).set(0);
+            balance.labels({method: 'GET'}).set(response.data.self_staking/1000000);
+            stake.labels({method: 'GET'}).set(response.data.voting_power/1000000);
+            response.data.is_online === true ? status.labels({method: 'GET'}).set(1) : status.labels({method: 'GET'}).set(0);
     
         }).catch ( (error) => {
-            balance.labels({statusCode:'500'});
-            stake.labels({statusCode:'500'});
-            status.labels({statusCode:'500'});
+            balance.labels({method:'GET'});
+            stake.labels({method:'GET'});
+            status.labels({method:'GET'});
 
             console.error(error);
         });
@@ -61,15 +61,15 @@ function checkSyncNode (registry) {
         name: 'validator_sync_status',
         help: 'Validator Sync Status (1 = synced, 0 = catching up)',
         registers: [registry],
-        labelNames: ['statusCode'],
+        labelNames: ['method'],
     });
     
     function checkSync () {
         axios.get('http://127.0.0.1:26657/status').then ( (response) => {
             const isSynced = response.data.result.sync_info.catching_up;
-            isSynced === true ? gauge.labels({statusCode: '200'}).set(0) :  gauge.labels({statusCode: '200'}).set(1);
+            isSynced === true ? gauge.labels({method: 'GET'}).set(0) :  gauge.labels({method: 'GET'}).set(1);
         }).catch( (error) => {
-            gauge.labels({statusCode: '500'});
+            gauge.labels({method: 'GET'});
             console.error(error);
         });
 
