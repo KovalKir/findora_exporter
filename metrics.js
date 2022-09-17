@@ -36,9 +36,9 @@ function setExplorerMetrics (registry) {
     function setMetrics () {
         axios.get(url).then ( (response) => {
         
-            balance.labels({method: 'GET'}).set(response.data.self_staking/1000000);
-            stake.labels({method: 'GET'}).set(response.data.voting_power/1000000);
-            response.data.is_online === true ? status.labels({method: 'GET'}).set(1) : status.labels({method: 'GET'}).set(0);
+            balance.labels({method: 'GET'}).set(response.data.data.self_staking/1000000);
+            stake.labels({method: 'GET'}).set(response.data.data.voting_power/1000000);
+            response.data.data.is_online === true ? status.labels({method: 'GET'}).set(1) : status.labels({method: 'GET'}).set(0);
     
         }).catch ( (error) => {
             balance.labels({method:'GET'});
